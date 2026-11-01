@@ -7,6 +7,8 @@ description: Use Versatile Thermostat (VTherm) through Home Assistant's official
 
 Use the dedicated Versatile Thermostat tools exposed by Home Assistant's official MCP server. Keep diagnostic requests read-only and use write tools only for explicit control requests.
 
+History export and classic TPI tools were merged into the official VTherm `main` in [PR #2167](https://github.com/jmcollin78/versatile_thermostat/pull/2167) on 1 November 2026. A merge does not establish availability in a published release, the user's installed version, or the current MCP catalog. Discover the actual tools before selecting these workflows; installing this skill does not install or update VTherm or refresh a connector's catalog.
+
 ## Resolve the tool namespace
 
 Find tools by the suffix `versatile_thermostat__...`; do not assume a fixed MCP server name or prefix.

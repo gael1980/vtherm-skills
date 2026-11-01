@@ -46,11 +46,13 @@ Availability checked on **1 November 2026**. Verify the installed version and ac
 | --- | --- | --- |
 | List, inspect, diagnose | `list_vtherms`, `get_status`, `diagnose` | Native integration merged in [PR #2160](https://github.com/jmcollin78/versatile_thermostat/pull/2160); use a release containing it |
 | Set target, preset, HVAC mode | `set_temperature`, `set_preset`, `set_hvac_mode` | Same native integration; explicit user request and control permission required |
-| Recorder history, charts, CSV | `get_history` | [PR #2167](https://github.com/jmcollin78/versatile_thermostat/pull/2167) open, not yet merged |
-| Explore classic TPI coefficients | `check_tpi_optimization`, `analyze_tpi_coefficients` | PR #2167 open, not yet merged |
-| Apply specified TPI coefficients | `set_tpi_coefficients` | PR #2167 open, not yet merged |
+| Recorder history, charts, CSV | `get_history` | [PR #2167](https://github.com/jmcollin78/versatile_thermostat/pull/2167) merged into official `main` on 1 November 2026 |
+| Explore classic TPI coefficients | `check_tpi_optimization`, `analyze_tpi_coefficients` | Same merged PR #2167; estimates remain exploratory |
+| Apply specified TPI coefficients | `set_tpi_coefficients` | Same merged PR #2167; explicit user request and control permission required |
 
 A merged PR does not by itself establish that a published release contains it. Missing tools must be reported; the skill must not bypass a refusal using generic services or another server. A connector may need its tool catalog refreshed after an integration update.
+
+PR #2167 was merged at 13:58 UTC in commit [`48271bd`](https://github.com/jmcollin78/versatile_thermostat/commit/48271bdbf094a469900ed40b534c5c41e9d9709b). At this check, the latest published release, [10.6.3](https://github.com/jmcollin78/versatile_thermostat/releases/tag/10.6.3), does not contain these additional tools. Install a VTherm version containing that change and verify the actual MCP catalog before using them.
 
 TPI estimates remain exploratory and do not establish optimal settings. Analysis supports classic TPI over physical switches, needs at least seven usable days within the last fourteen days, and does not apply coefficients. Climate/valve analysis, SmartPI and Auto-TPI are unsupported by that analysis. Graphs require recorded climate history and client-side chart creation; HVAC action is not physical relay duty.
 
@@ -78,7 +80,7 @@ The CLI discovers this package through `skills/vtherm-mcp/SKILL.md`. According t
 
 ## Pour les utilisateurs francophones
 
-Installez la skill avec la commande ci-dessus, puis connectez votre agent à votre propre serveur MCP officiel Home Assistant et exposez les thermostats à Assist. Les demandes en français sont prises en charge. Le diagnostic reste en lecture seule ; toute modification nécessite une demande explicite. Les fonctions de graphe, d’historique et d’analyse TPI nécessitent les outils de la PR #2167, encore ouverte à la date de vérification. Les estimations TPI sont exploratoires et ne prouvent pas que les coefficients proposés sont optimaux.
+Installez la skill avec la commande ci-dessus, puis connectez votre agent à votre propre serveur MCP officiel Home Assistant et exposez les thermostats à Assist. Les demandes en français sont prises en charge. Le diagnostic reste en lecture seule ; toute modification nécessite une demande explicite. Les fonctions de graphe, d’historique et d’analyse TPI ont été fusionnées dans le `main` officiel avec la PR #2167 le 1er novembre 2026. À cette vérification, la dernière release publiée, 10.6.3, ne les contient pas encore : utilisez une version intégrant cette évolution, puis vérifiez les outils visibles dans votre connexion MCP. Les estimations TPI sont exploratoires et ne prouvent pas que les coefficients proposés sont optimaux.
 
 ## License and attribution
 
