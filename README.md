@@ -1,6 +1,6 @@
 # VTherm Skills
 
-Agent skills for diagnosing and controlling [Versatile Thermostat](https://github.com/jmcollin78/versatile_thermostat) through **Home Assistant’s official MCP server**.
+Agent skills for diagnosing and controlling [Versatile Thermostat](https://github.com/jmcollin78/versatile_thermostat) through **Home Assistant’s official MCP server, ha-mcp, or both**.
 
 This community package contains instructions and tool references. Each user connects their own Home Assistant instance separately. It does not include a custom MCP server, credentials, or thermostat data.
 
@@ -31,14 +31,21 @@ Run those local commands from the directory containing `vtherm-skills`, or use a
 
 ## Connect Home Assistant
 
-1. Install a VTherm version containing the native LLM tools you want to use, and a compatible Home Assistant version. No minimum release number is asserted here; verify the tool catalog after setup.
-2. Configure the [official Home Assistant MCP Server integration](https://www.home-assistant.io/integrations/mcp_server/) and connect your agent using your own instance URL and authentication.
-3. Expose the intended VTherm entities to Assist. Tool availability and entity permissions are enforced by Home Assistant.
-4. Check that tools ending in `versatile_thermostat__list_vtherms`, `versatile_thermostat__get_status`, and `versatile_thermostat__diagnose` are visible. Client prefixes vary.
+Connect your agent to your own Home Assistant using one of these configurations. Installing the skill does not create a connection or grant permission.
 
-Use the server’s **Read only** option for diagnostic access. Control requires write tools and permission to control the entity. Installing this skill does not create or authorize a connection.
+| Configuration | Skill behavior |
+| --- | --- |
+| Official MCP only | Uses dedicated native VTherm tools available in the catalog. |
+| [ha-mcp](https://github.com/homeassistant-ai/ha-mcp) only | Discovers VTherms, reads state/reasons, creates recorded charts/CSV and uses standard climate services for explicit control. Native TPI analysis/application is unavailable without dedicated tools. |
+| Both | Prefers dedicated VTherm tools per operation; uses supported ha-mcp routes for absent capabilities. Never duplicates writes or bypasses a refusal. |
 
-## Feature availability
+For the official route, install a VTherm/HA version supporting the desired tools, configure the [official MCP Server integration](https://www.home-assistant.io/integrations/mcp_server/), expose the intended thermostats to Assist, and check for tools ending in `versatile_thermostat__list_vtherms`, `versatile_thermostat__get_status` and `versatile_thermostat__diagnose`. Prefixes vary.
+
+For ha-mcp, follow its own connection documentation and discover the installed catalog. The skill uses generic state/history tools and standard climate services; it does not assume native Assist tools are relayed. See [the ha-mcp workflow](skills/vtherm-mcp/references/ha-mcp.md) for version/schema checks and limits. ha-mcp policies and credentials differ from native Assist exposure and user-context checks.
+
+Use the chosen server's read-only settings for diagnostic access. A hidden/denied operation must not be rerouted to another server. In mixed setups, keep instance identity and target consistent; identical entity IDs can exist in different homes. Workspace restrictions still take precedence.
+
+## Native feature availability
 
 Availability checked on **1 November 2026**. Verify the installed version and actual connector catalog rather than assuming all tools below are available.
 
@@ -66,13 +73,15 @@ TPI estimates remain exploratory and do not establish optimal settings. Analysis
 | Fais un graphe annoté du thermostat cuisine sur 48 h. | Make an annotated chart of the kitchen thermostat over 48 hours. |
 | Les coefficients du thermostat du bureau sont-ils bien réglés ? | Are the office thermostat coefficients well tuned? |
 
-The last two examples require the additional tools described above. Clients supporting explicit Codex skill invocation can prefix a request with `$vtherm-mcp`.
+Charts use native history or the supported ha-mcp history route. TPI analysis requires the dedicated tools described above. Clients supporting explicit Codex skill invocation can prefix a request with `$vtherm-mcp`.
 
 ## Control and diagnostics
 
-Diagnostic requests remain read-only. Writes require an explicit user request and a clear target. Large TPI changes require the tool’s additional confirmation workflow. The skill prioritizes VTherm’s own reasons, preserves entity IDs and enum values, and never invents missing history or uploads logs without authorization.
+Diagnostic requests remain read-only. Writes require an explicit user request and a clear target. Coefficient application requires the native tool; large TPI changes require its additional confirmation workflow. The skill does not replace it with a generic TPI service call. The skill prioritizes VTherm’s own reasons, preserves entity IDs and enum values, and never invents missing history or uploads logs without authorization.
 
-See [the skill](skills/vtherm-mcp/SKILL.md), [tool reference](skills/vtherm-mcp/references/tool-reference.md), and [diagnostic reference](skills/vtherm-mcp/references/diagnostic-reference.md).
+For uncertain VTherm feature/configuration questions, the skill consults the current [official documentation](https://www.versatile-thermostat.org/) and links the relevant page. If it cannot consult the documentation or establish the answer, it states that limit and directs the user to the site. Documented features are distinguished from the installed version and live evidence.
+
+See [the skill](skills/vtherm-mcp/SKILL.md), [tool reference](skills/vtherm-mcp/references/tool-reference.md), [diagnostic reference](skills/vtherm-mcp/references/diagnostic-reference.md), and [ha-mcp workflow](skills/vtherm-mcp/references/ha-mcp.md).
 
 ## skills.sh directory
 
@@ -80,7 +89,13 @@ The CLI discovers this package through `skills/vtherm-mcp/SKILL.md`. According t
 
 ## Pour les utilisateurs francophones
 
-Installez la skill avec la commande ci-dessus, puis connectez votre agent à votre propre serveur MCP officiel Home Assistant et exposez les thermostats à Assist. Les demandes en français sont prises en charge. Le diagnostic reste en lecture seule ; toute modification nécessite une demande explicite. Les fonctions de graphe, d’historique et d’analyse TPI ont été fusionnées dans le `main` officiel avec la PR #2167 le 1er novembre 2026. À cette vérification, la dernière release publiée, 10.6.3, ne les contient pas encore : utilisez une version intégrant cette évolution, puis vérifiez les outils visibles dans votre connexion MCP. Les estimations TPI sont exploratoires et ne prouvent pas que les coefficients proposés sont optimaux.
+Installez la skill avec la commande ci-dessus, puis connectez votre agent au MCP officiel Home Assistant, à **ha-mcp seul**, ou aux **deux**. Avec les deux, les outils VTherm dédiés sont prioritaires pour chaque opération disponible. Avec ha-mcp seul, la skill utilise les états et raisons exposés, l'historique pour les graphiques/CSV et les services climate pour les commandes explicites. Le diagnostic reste en lecture seule ; les refus et restrictions ne sont jamais contournés par l'autre serveur.
+
+L'analyse et l'application des coefficients TPI nécessitent les outils natifs dédiés ; un appel de service générique ne reproduit pas leur procédure de confirmation. Ces outils ont été fusionnés dans le `main` officiel avec la PR #2167 le 1er novembre 2026. Vérifiez la version installée et le catalogue réel : la fusion ne prouve pas leur disponibilité. Les estimations restent exploratoires et ne prouvent pas un réglage optimal.
+
+Pour une question sans réponse établie, la skill consulte en priorité la [documentation officielle à jour](https://www.versatile-thermostat.org/), cite la page pertinente ou vous renvoie vers ce site si elle ne peut pas la consulter. Elle distingue la documentation de l’état réel de votre installation.
+
+La compatibilité décrite repose sur les contrats d'outils et la validation du paquet ; elle ne constitue pas un essai réel des trois configurations sur Home Assistant.
 
 ## License and attribution
 

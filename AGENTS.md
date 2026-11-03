@@ -2,9 +2,9 @@
 
 ## Scope and source
 
-This repository publishes reusable agent instructions for the native Versatile Thermostat integration through Home Assistant’s official MCP server. Keep that architecture. Do not introduce a custom VTherm MCP server. The publication source is `skills/vtherm-mcp/`; read its entire `SKILL.md` and relevant references before editing.
+This repository publishes reusable agent instructions for Versatile Thermostat through Home Assistant’s official MCP server, ha-mcp, or both. Keep the native VTherm LLM architecture for dedicated tools and the documented capability limits of the generic ha-mcp route. Do not introduce a custom VTherm MCP server. The publication source is `skills/vtherm-mcp/`; read its entire `SKILL.md` and relevant references before editing.
 
-In the maintainer’s VTH workspace, `../vtherm-mcp/` is a local companion copy. When present, compare both copies before editing and keep their four skill files identical after an authorized update. Investigate differences; do not overwrite independent local changes. Do not require that sibling directory for users or standalone clones.
+In the maintainer’s VTH workspace, `../vtherm-mcp/` is a local companion copy. When present, compare both copies before editing and keep all packaged skill files identical after an authorized update. Investigate differences; do not overwrite independent local changes. Do not require that sibling directory for users or standalone clones.
 
 ## Git synchronization
 

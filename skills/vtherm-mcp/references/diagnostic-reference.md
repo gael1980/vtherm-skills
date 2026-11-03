@@ -24,6 +24,10 @@ Do not treat `target_temperature > current_temperature` as proof that the underl
 
 When the returned evidence conflicts or is incomplete, state what is known and what is not established.
 
+## ha-mcp attribute diagnosis
+
+When native `diagnose` is absent, [ha-mcp.md](ha-mcp.md) describes the state-read route. Native `reasons` fields originate in `attributes.specific_states`; use the actual returned fields without inventing a native response. The feature-manager sections below may be nested attributes, absent or incomplete. Absent evidence does not prove a feature is disabled. The same evidence order and read-only boundary apply.
+
 ## Returned sections
 
 `diagnose` can return these VTherm sections when present:
@@ -50,6 +54,8 @@ vtherm_over_valve
 Use only sections present in the response. Do not assume a feature is configured merely because a section name exists in this reference; check `feature_flags` and returned content.
 
 ## Documentation resources
+
+The current official documentation starts at https://www.versatile-thermostat.org/. Use it when the skill or available attributes cannot answer a question; this also covers configuration and feature explanations. Browse the relevant page when possible and link it in the answer. If access or evidence is insufficient, acknowledge the uncertainty and refer the user to the site. Prefer current site navigation over stale deep links below; never invent an unverified page path. Distinguish documented behavior and version requirements from the actual installation and live evidence.
 
 French documentation:
 

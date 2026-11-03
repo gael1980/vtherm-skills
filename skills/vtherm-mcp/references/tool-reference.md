@@ -1,4 +1,6 @@
-# VTherm MCP tool reference
+# Native VTherm MCP tool reference
+
+This reference documents the dedicated native tools. For ha-mcp-only or mixed setups, select the route in [../SKILL.md](../SKILL.md) and read [ha-mcp.md](ha-mcp.md). Do not apply these native schemas, exposure guarantees or confirmation tokens to generic tools.
 
 ## Contents
 
@@ -232,6 +234,6 @@ Each result contains `stage`, `stage_number`, `stage_total`, `state_changed`. A 
 
 ## `versatile_thermostat__get_history`
 
-Natural requests for a professional/annotated thermostat graph over 48 h require this historical data tool and client-side chart creation, not unsolicited YAML for a dashboard card. All types, including SmartPI, are supported. Only annotate recorded events; neither historical SmartPI power nor physical relay history is included. Do not reconstruct those missing series from current state. An absent `get_history` tool is a connection-catalog problem to report, not permission to invent data or replace the request with configuration instructions.
+Natural requests for a professional/annotated thermostat graph over 48 h use this historical data tool when available and client-side chart creation, not unsolicited YAML for a dashboard card. All types, including SmartPI, are supported. Only annotate recorded events; neither historical SmartPI power nor physical relay history is included. Do not reconstruct those missing series from current state. When this native tool is absent, the supported ha-mcp history route may be used under the routing rules; if no history tool is usable, report the limitation. Never invent data or replace the requested chart with configuration instructions.
 
 Read-only climate entity history for client-side CSV/charts. Input: `entity_id`, `start_time`, `end_time` (timezone-aware ISO 8601; maximum 14 days per period), `offset` (default 0), `limit` (default/max 500). Fetch all pages using `next_offset` and fixed bounds until null. Returns `rows` (`timestamp`, `state`, recorded `attributes`), `total_rows`, `next_offset`, `pagination_complete`, UTC bounds and semantics. Attributes: current_temperature, temperature, target_temp_low/high, hvac_action, preset_mode, unit_of_measurement. Missing attributes are null. Current Assist exposure and authenticated READ permission are checked at every call. All VTherm types; no TPI eligibility requirement. Associated sensor/relay histories are not included. Pagination is not a frozen snapshot. Retention/exclusions/outages can limit history. No HA writes or generated files on HA; the client creates the requested artifact when supported.
