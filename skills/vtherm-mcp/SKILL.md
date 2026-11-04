@@ -1,11 +1,21 @@
 ---
 name: vtherm-mcp
-description: Diagnose and control Versatile Thermostat (VTherm) using Home Assistant's official MCP server, ha-mcp, or both. Use for French or English questions about VTherm features/configuration and requests to list thermostats, inspect states, explain heating/window/safety/power-shedding behavior, create recorded charts or CSV, change temperature/preset/HVAC mode, or inspect/analyze/apply classic TPI coefficients. Select available tools and report capability limits; TPI analysis/application requires dedicated native VTherm tools.
+description: Help users install, configure, understand, diagnose and control Versatile Thermostat (VTherm). Use for choosing a thermostat type, sensors, presets, schedules, absence, heating/cooling, windows, safety, power shedding, central control, recorded charts and TPI questions. Provide documentation-based guidance without MCP; use Home Assistant's official MCP server, ha-mcp, or both for supported live operations. Keep diagnosis read-only and coefficient estimates exploratory.
 ---
 
 # VTherm MCP
 
 Support the official Home Assistant MCP server, ha-mcp alone, or both. Discover capabilities before selecting a workflow; do not require a particular server name. Keep diagnostic requests read-only and use write tools only for explicit control requests.
+
+## When to Activate
+
+Use for VTherm setup, everyday use, troubleshooting and supported control, in the user's language. For explanations or setup advice, start with the documentation workflow; a Home Assistant connection is optional. Discover live tools when the request needs the user's actual installation. Without usable MCP tools, provide documented guidance and interpret user-supplied evidence, clearly identifying its source and age.
+
+Read [references/user-guide.md](references/user-guide.md) for first setup, thermostat-type choice, presets/schedules/absence, central configuration, comfort/energy review, missing tools and support preparation. Ask only for information that changes the answer; use accessible authorized evidence first. Keep ordinary explanations short and offer the next relevant step rather than a full technical questionnaire.
+
+When a user needs an additional capability, interface or device integration, consult the current [official complements catalog](https://www.versatile-thermostat.org/fr/plugins/) and the add-on workflow in that reference. Select by the user's actual need; do not maintain a copied plugin list or recommend remembered plugins without checking their current purpose and compatibility.
+
+Installing/configuring VTherm, editing preset temperatures, timed presets, central selectors, automations and protection settings are distinct from the supported climate writes below. Explain their documented UI workflow or prepare a requested draft; this skill does not provide execution workflows for those changes. Never turn a timed or scheduled request into an indefinite immediate write.
 
 History export and classic TPI tools were merged into the official VTherm `main` in [PR #2167](https://github.com/jmcollin78/versatile_thermostat/pull/2167) on 1 November 2026. A merge does not establish availability in a published release, the user's installed version, or the current MCP catalog. Discover the actual tools before selecting these workflows; installing this skill does not install or update VTherm or refresh a connector's catalog.
 
@@ -15,6 +25,7 @@ Discover dedicated VTherm tools and ha-mcp tools, including deferred tools if th
 
 | Available capabilities | Workflow |
 | --- | --- |
+| No usable MCP connection | Documentation and user-supplied evidence via [references/user-guide.md](references/user-guide.md); no live inspection or control claims. |
 | Native VTherm tools only | Use the dedicated tools described below. Report any missing capability. |
 | ha-mcp tools only | Use the state, diagnosis, history and standard climate-control workflows in [references/ha-mcp.md](references/ha-mcp.md). Native TPI analysis/application remains unavailable without its dedicated tools. |
 | Both | Prefer the dedicated VTherm tool for each covered operation. Use ha-mcp for supported operations the native catalog lacks, subject to the restrictions below. |
@@ -46,7 +57,7 @@ Read [references/tool-reference.md](references/tool-reference.md) when exact par
 
 ## Match the user's language
 
-Answer in the language of the request. Support both French and English naturally.
+Answer in the language of the request, including French, English and German; do not restrict help to these languages. Prefer documentation in that language when available.
 
 Keep machine values exactly as returned by Home Assistant. Do not translate entity IDs, preset names, or HVAC mode values such as `comfort`, `boost`, `heat`, or `off` before passing them to a tool.
 
@@ -110,8 +121,19 @@ Treat `set_temperature`, `set_preset`, `set_hvac_mode`, and `set_tpi_coefficient
 - Preserve the user's requested scope: one thermostat means one thermostat.
 - After a successful write, summarize the requested change and `state_after_call` when returned.
 - Explain that VTherm may subsequently alter the effective state because of central mode, window, power shedding, safety, auto-start/stop, presets, or regulation.
+- Resolve explicit multi-room requests to a concrete list of intended entities before writing; clarify ambiguous membership. Apply only supported operations to those targets and report success, failure or uncertain outcome per entity and requested operation, including partial changes when mode and temperature need separate calls. Stop on a refusal or uncertain outcome and report remaining operations/targets as unattempted; inspect uncertain state before considering a retry. Do not claim a group change was atomic or automatically replay writes.
+
+## Anti-Patterns
+
+- Requiring MCP access to explain or help configure VTherm.
+- Treating preset selection as editing its configured temperature, or `away` as an always-selectable preset.
+- Applying an immediate temperature or preset for a request that also requires a duration, schedule or automatic restoration.
+- Promising energy savings from temperature curves or HVAC action alone.
+- Treating documentation, user-supplied snapshots or a merged PR as proof of the live installation's capabilities.
 
 ## Documentation and logs
+
+Always include an official VTherm documentation link in each substantive VTherm answer, including setup advice, diagnosis, control results, charts, TPI analysis and capability limitations. Prefer the specific relevant page whose URL has been verified, in the user's language when available; otherwise link to [the official documentation](https://www.versatile-thermostat.org/). A link offered for further reading does not mean the page was consulted: say when browsing was unavailable, and never present an unread page as supporting evidence.
 
 Use [the official VTherm website](https://www.versatile-thermostat.org/) as the primary source for current VTherm documentation. This applies to general questions about features, configuration and parameters as well as troubleshooting, on all three MCP configurations. When the answer is uncertain, a field is unfamiliar, or the skill/tool result does not explain the behavior, look up the relevant current page before answering if web access is available. Start from the site and follow its navigation/search; prefer the user's language (French `/fr/`, English `/en/`, German `/de/`). Follow current links rather than assuming the static paths in this skill remain valid.
 
@@ -144,6 +166,8 @@ For `large_change_confirmation_required`, show the comparison and ask for additi
 
 
 ## Recorder history exports and charts
+
+Resolve relative periods against the user's timezone and current time; state fixed start/end bounds and label the chart timezone. Distinguish an elapsed duration such as 48 hours from local calendar days across daylight-saving changes. Clarify dates only when ambiguity materially affects the request.
 
 A request such as “tu me fais un graphe pro du thermostat de la cuisine annoté sur 48h” asks for an actual client-created chart using historical data. Resolve the room, call native `get_history` or the ha-mcp raw-history route when the native tool is absent, fetch all pages and create the chart if the client supports it. Do not substitute ApexCharts/Lovelace YAML unless the user explicitly requests a dashboard card. SmartPI supports history export; its refusal for TPI coefficient analysis must not block charts. Annotate recorded target/preset changes; report missing series. This tool does not expose historical SmartPI power percentages or physical relay states, and current values cannot reconstruct them. Do not invent those series or equate HVAC action with physical duty. If neither native history nor a usable ha-mcp history tool is available, explain the missing capability; no prompt can expose an absent tool. For ha-mcp, use its own history schema and completeness checks from the reference.
 

@@ -1,4 +1,4 @@
 interface:
   display_name: "VTherm MCP"
-  short_description: "VTherm with official Home Assistant MCP, ha-mcp, or both"
-  default_prompt: "Use $vtherm-mcp to inspect, diagnose, or safely control a Versatile Thermostat using the official Home Assistant MCP server, ha-mcp, or both, according to the available tools."
+  short_description: "Set up, understand, diagnose and control VTherm"
+  default_prompt: "Use $vtherm-mcp to help me choose, configure or understand Versatile Thermostat, and use available Home Assistant tools when my request needs live diagnosis or explicit control."

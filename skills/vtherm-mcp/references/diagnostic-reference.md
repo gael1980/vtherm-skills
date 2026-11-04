@@ -110,4 +110,4 @@ Confidence: established / likely / inconclusive
 Next step: <only if needed>
 ```
 
-Answer in French for French questions and English for English questions. Keep Home Assistant/VTherm raw enum values in code formatting when useful.
+Answer in the user's language, including French, English or German. Keep Home Assistant/VTherm raw enum values in code formatting when useful.
