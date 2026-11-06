@@ -18,27 +18,7 @@ Use the user's language and explain unfamiliar terms on first use: a preset is a
 
 ## First installation and thermostat type
 
-Follow the current [installation guide](https://www.versatile-thermostat.org/fr/docs/installation/) and [creation guide](https://www.versatile-thermostat.org/fr/docs/creation/). Guide the user through HACS/HA installation and the integration's configuration UI as documented for their version. Installing this skill does not install VTherm. Do not ask users to create YAML thermostats as the default setup path.
-
-Choose from exposed controls, not the heater's marketing name:
-
-| Equipment/control actually available | Candidate to verify in current docs |
-| --- | --- |
-| On/off heater exposed as a switch | `over_switch` |
-| Heat pump, air conditioner or thermostat exposed as `climate` | `over_climate` |
-| TRV exposing `climate` and controllable valve-opening entities | `over_climate` with direct valve control, after checking model support |
-| Valve opening exposed as `number`, without an associated `climate` | `over_valve` |
-
-Pilot-wire devices can expose other domains and need documented custom-command mappings; verify the exact model in the site's hardware catalog before advising. Do not assume every `climate` device should use its built-in regulation or every TRV should use `over_valve`. Explain the choice before creation: changing type is not a normal reconfiguration operation. These are configuration choices, not permission to command a relay or valve directly. [Type selection](https://www.versatile-thermostat.org/fr/docs/creation/), [valve distinction](https://www.versatile-thermostat.org/fr/docs/over-valve/).
-
-Prepare a short configuration plan from confirmed information:
-
-- Room, controlled entities and a representative room-temperature sensor, including units and update behavior.
-- Outdoor-temperature source where required by the selected regulation, locally or inherited from central configuration.
-- Desired heating/cooling behavior, supported by both VTherm configuration and the equipment.
-- Local versus inherited settings, preset temperatures and only the optional features the user wants.
-
-Check the [base attributes](https://www.versatile-thermostat.org/fr/docs/base-attributes/) for the installed version. Missing sensor updates, location near a radiator/window, or inconsistent units can undermine regulation. Do not give one universal cycle length or coefficient pair for every heater. Verify completion by the integration's configuration status and, when authorized tools exist, read back the created entity and reasons. Do not claim creation succeeded from a plan alone.
+For creation, type selection, sensors, central inheritance and initial regulation, follow [guided-setup.md](guided-setup.md). It contains the interactive workflow and hardware branches; use the sections below for everyday use after setup.
 
 ## Everyday use and configuration boundaries
 

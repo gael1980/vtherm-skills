@@ -6,7 +6,7 @@ This community package contains instructions and tool references. Each user conn
 
 ## What it helps with
 
-- First setup: choose a thermostat type from the actual equipment/entities and prepare sensors and local/central settings.
+- Guided setup: identify equipment, choose the thermostat type, build a confirmed plan, walk through Home Assistant screens and verify the result. Beginners proceed one step at a time; experienced users can go straight to technical settings. See [guided setup](skills/vtherm-mcp/references/guided-setup.md).
 - Everyday use: understand presets, manual targets, schedules, absence, cooling and central-boiler behavior.
 - Troubleshooting: interpret VTherm reasons, distinguish missing tools from denied access and prepare a redacted support report.
 - Comfort and energy: review recorded behavior while distinguishing measured consumption from estimates.
@@ -103,6 +103,8 @@ See [the skill](skills/vtherm-mcp/SKILL.md), [tool reference](skills/vtherm-mcp/
 The CLI discovers this package through `skills/vtherm-mcp/SKILL.md`. According to the [skills.sh FAQ](https://skills.sh/docs/faq), directory ranking is populated automatically from anonymous installation telemetry when users install a GitHub repository with `npx skills add`. Publishing the source alone does not guarantee immediate listing; no indexing deadline is specified. Local validation here disables telemetry and does not establish public listing.
 
 ## Pour les utilisateurs francophones
+
+Demandez « Je viens d’installer VTherm, aide-moi à configurer le chauffage de ma cuisine ». Le [parcours guidé](skills/vtherm-mcp/references/guided-setup.md) avance écran par écran : matériel, capteurs, type, héritage central, régulation, presets et options, puis vérification. Vous pouvez demander pourquoi un paramètre est utile, passer à la suite ou aller directement aux réglages techniques. Vous effectuez la création dans Home Assistant ; la découverte MCP reste en lecture seule.
 
 Pour un besoin complémentaire (interface, programmation, matériel ou régulation), la skill consulte le [catalogue officiel des compléments](https://www.versatile-thermostat.org/fr/plugins/), puis la documentation des projets pertinents. Elle explique leur utilité et les prérequis vérifiés selon votre besoin, sans conserver une liste figée ni installer automatiquement un complément. Si elle ne peut pas vérifier les sources, elle le précise et vous renvoie vers le catalogue.
 
