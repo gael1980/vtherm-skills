@@ -19,6 +19,8 @@ assist__versatile_thermostat__list_vtherms
 assist__versatile_thermostat__get_status
 assist__versatile_thermostat__diagnose
 assist__versatile_thermostat__get_history
+assist__versatile_thermostat__get_logs
+assist__versatile_thermostat__get_plugins
 assist__versatile_thermostat__check_tpi_optimization
 assist__versatile_thermostat__analyze_tpi_coefficients
 assist__versatile_thermostat__set_temperature
@@ -113,6 +115,23 @@ reasons.temperature_slope
 reasons.is_sleeping
 reasons.is_recalculate_scheduled
 ```
+
+### `versatile_thermostat__get_logs`
+
+Read the VTherm collector in memory. Both this tool and `get_plugins` require a loaded VTherm climate entity exposed to the assistant. These reads do not run services or change configuration.
+
+- Required: `entity_id`. Optional: `start_time`, `end_time` and `min_level` (`DEBUG`, `INFO`, `WARNING` or `ERROR`, default `DEBUG`).
+- Timestamps require ISO 8601 with seconds and an explicit offset, such as `2026-11-08T18:30:00+01:00` or `2026-11-08T17:30:00Z`. Bounds are inclusive and normalized to UTC. End defaults to query time. Start defaults to one hour before the effective end. Reject an inverted interval.
+- Returns the last 5,000 matches in collector insertion order, with `filters`, `selected_count`, `returned_count`, `omitted_count`, `truncated` and `entries`. Entries contain `timestamp`, `level`, `level_name`, `logger_name` and `message`. There is no pagination or maximum query duration.
+- Use effective bounds and counts when summarizing. For a truncated or oversized result, use narrower fixed time windows where needed and account for overlapping inclusive boundaries. Retention, eviction and restarts limit completeness even when `truncated` is false. Filtering uses the thermostat name and includes untagged messages, so individual entries may have uncertain attribution.
+
+### `versatile_thermostat__get_plugins`
+
+Pass only `entity_id`. The tool reads configured links and diagnostics already published for the thermostat, without refreshing, calculating or issuing commands. It checks SmartPI, Hysteresis, Pellet Regulation, Auto-fan, Heating Failure Detection, Climate Replication and Inhibition. Discovery does not cover all third-party or future plugins.
+
+Read `plugins`, `unresolved_links`, `coverage`, `diagnostics_status` and per-plugin facts and diagnostic sources. Keep configuration, algorithm selection, loading, availability and activity distinct. Preserve unknown producers and identities, source publication timestamps, and partial or unavailable evidence. A null `configured_plugin_count` is unknown. Use `identified_configured_plugin_count` for the identified subset when present. A logical Hysteresis activity flag does not prove physical heating.
+
+For either tool, report structured `errors` when returned, including target or collector failures, and respect native refusals. See [diagnostic-reference.md](diagnostic-reference.md) for interpretation.
 
 ## Write tools
 

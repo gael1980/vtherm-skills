@@ -14,7 +14,7 @@ Resolve a room among `climate` entities using available search tools; follow sea
 
 When native `diagnose` is absent, use a read-only state inspection. Read full attributes, including nested `specific_states` and feature-manager sections when present. Interpret `specific_states.messages`, `hvac_off_reason`, `hvac_mode_reason`, `should_device_be_active` and `unavailable_underlying_entities` in that order, then the relevant manager and temperatures. Read [diagnostic-reference.md](diagnostic-reference.md) for interpretation and documentation.
 
-Explain that this diagnosis uses exposed state attributes. Do not invent the native `reasons`, `feature_flags` or `support_resources` response, or assume missing sections mean disabled protections. If attributes do not establish a cause, explain what is missing and offer the documentation/log workflow. Do not call a generic write tool or execute code to collect diagnostic data.
+Explain that this diagnosis uses exposed state attributes. Do not invent the native `reasons`, `feature_flags` or `support_resources` response, or assume missing sections mean disabled protections. If attributes do not establish a cause, explain what is missing and offer the documentation/log workflow. Native collector logs and linked-plugin diagnostics require `versatile_thermostat__get_logs` and `versatile_thermostat__get_plugins`. Report when these tools are absent. Exposed attributes can provide context, and Recorder history can show recorded state changes. Neither establishes collector contents or native plugin coverage. Do not call a generic write tool or execute code to collect diagnostic data.
 
 ## Temperature, preset and HVAC mode
 

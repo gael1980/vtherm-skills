@@ -11,7 +11,7 @@ This community package contains instructions and tool references. Each user conn
 - Troubleshooting: interpret VTherm reasons, distinguish missing tools from denied access and prepare a redacted support report.
 - Comfort and energy: review recorded behavior while distinguishing measured consumption from estimates.
 - Complements: consult the current [official catalog](https://www.versatile-thermostat.org/fr/plugins/) and relevant project documentation to explain suitable extensions for the user's needs, without maintaining a copied plugin list or assuming compatibility.
-- Live operations: inspect, diagnose, chart history and execute supported explicit climate/TPI changes when the required tools are available.
+- Live operations: inspect, diagnose, read collector logs and linked-plugin diagnostics, chart history and execute supported explicit climate/TPI changes when the required tools are available.
 
 Answers follow the user's language, including French, English and German. See the [user workflows](skills/vtherm-mcp/references/user-guide.md). Installation/configuration advice and automation drafts do not execute changes. Timed presets, schedules, preset-temperature edits and central selectors are documented guidance; they are outside this skill's execution workflows. A timed request is never replaced by an indefinite immediate change.
 
@@ -59,7 +59,7 @@ Use the chosen server's read-only settings for diagnostic access. A hidden/denie
 
 ## Native feature availability
 
-Availability checked on **1 November 2026**. Verify the installed version and actual connector catalog rather than assuming all tools below are available.
+Availability checked on **8 November 2026**. Verify the installed version and actual connector catalog rather than assuming all tools below are available.
 
 | Workflow | Required tools | Upstream status at this check |
 | --- | --- | --- |
@@ -67,11 +67,12 @@ Availability checked on **1 November 2026**. Verify the installed version and ac
 | Set target, preset, HVAC mode | `set_temperature`, `set_preset`, `set_hvac_mode` | Same native integration; explicit user request and control permission required |
 | Recorder history, charts, CSV | `get_history` | [PR #2167](https://github.com/jmcollin78/versatile_thermostat/pull/2167) merged into official `main` on 1 November 2026 |
 | Explore classic TPI coefficients | `check_tpi_optimization`, `analyze_tpi_coefficients` | Same merged PR #2167; estimates remain exploratory |
+| Read collector logs and linked-plugin diagnostics | `get_logs`, `get_plugins` | [PR #2209](https://github.com/jmcollin78/versatile_thermostat/pull/2209) merged on 8 November 2026 and verified in VTherm 10.6.4 |
 | Apply specified TPI coefficients | `set_tpi_coefficients` | Same merged PR #2167; explicit user request and control permission required |
 
 A merged PR does not by itself establish that a published release contains it. Missing tools must be reported; the skill must not bypass a refusal using generic services or another server. A connector may need its tool catalog refreshed after an integration update.
 
-PR #2167 was merged at 13:58 UTC in commit [`48271bd`](https://github.com/jmcollin78/versatile_thermostat/commit/48271bdbf094a469900ed40b534c5c41e9d9709b). At this check, the latest published release, [10.6.3](https://github.com/jmcollin78/versatile_thermostat/releases/tag/10.6.3), does not contain these additional tools. Install a VTherm version containing that change and verify the actual MCP catalog before using them.
+The published release [10.6.4](https://github.com/jmcollin78/versatile_thermostat/releases/tag/10.6.4) contains both sets of tools. The two diagnostics tools target loaded VTherms exposed to Assist. Collector logs may be truncated or incomplete, and plugin discovery and state depend on the available evidence. Verify both tools in the actual MCP catalog.
 
 TPI estimates remain exploratory and do not establish optimal settings. Analysis supports classic TPI over physical switches, needs at least seven usable days within the last fourteen days, and does not apply coefficients. Climate/valve analysis, SmartPI and Auto-TPI are unsupported by that analysis. Graphs require recorded climate history and client-side chart creation; HVAC action is not physical relay duty.
 
@@ -84,6 +85,7 @@ TPI estimates remain exploratory and do not establish optimal settings. Analysis
 | Aide-moi à comprendre ma consommation sans changer les réglages. | Help me understand consumption without changing settings. |
 | Quels VTherm sont disponibles ? | List the available VTherms. |
 | Pourquoi le thermostat du salon ne chauffe pas ? | Why is the living-room thermostat idle? |
+| Consulte les journaux du salon depuis une heure et identifie les plugins qui lui sont liés. | Check the living-room logs from the past hour and identify its linked plugins. |
 | Mets le thermostat du salon à 19,5 °C. | Set the living-room thermostat to 19.5 °C. |
 | Fais un graphe annoté du thermostat cuisine sur 48 h. | Make an annotated chart of the kitchen thermostat over 48 hours. |
 | Les coefficients du thermostat du bureau sont-ils bien réglés ? | Are the office thermostat coefficients well tuned? |
@@ -113,6 +115,8 @@ Sans connexion MCP, la skill peut déjà vous aider à choisir le type de VTherm
 Installez la skill avec la commande ci-dessus, puis connectez votre agent au MCP officiel Home Assistant, à **ha-mcp seul**, ou aux **deux**. Avec les deux, les outils VTherm dédiés sont prioritaires pour chaque opération disponible. Avec ha-mcp seul, la skill utilise les états et raisons exposés, l'historique pour les graphiques/CSV et les services climate pour les commandes explicites. Le diagnostic reste en lecture seule ; les refus et restrictions ne sont jamais contournés par l'autre serveur.
 
 L'analyse et l'application des coefficients TPI nécessitent les outils natifs dédiés ; un appel de service générique ne reproduit pas leur procédure de confirmation. Ces outils ont été fusionnés dans le `main` officiel avec la PR #2167 le 1er novembre 2026. Vérifiez la version installée et le catalogue réel : la fusion ne prouve pas leur disponibilité. Les estimations restent exploratoires et ne prouvent pas un réglage optimal.
+
+Avec VTherm 10.6.4 et les outils natifs correspondants dans le catalogue MCP, la skill peut lire les journaux du collecteur et les diagnostics publiés par les plugins liés au thermostat. Elle signale la troncature et les états de plugins inconnus.
 
 Chaque réponse VTherm substantielle renvoie vers la page pertinente vérifiée de la [documentation officielle](https://www.versatile-thermostat.org/), ou vers son accueil si la page exacte n'est pas vérifiée. En cas d'incertitude, la skill consulte cette documentation si elle peut naviguer et précise sinon cette limite. Un lien proposé à lire ne vaut pas consultation ; la documentation reste distincte de l'état réel de votre installation.
 

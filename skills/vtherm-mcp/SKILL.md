@@ -33,7 +33,7 @@ Discover dedicated VTherm tools and ha-mcp tools, including deferred tools if th
 | --- | --- |
 | No usable MCP connection | Documentation and user-supplied evidence via [references/user-guide.md](references/user-guide.md); no live inspection or control claims. |
 | Native VTherm tools only | Use the dedicated tools described below. Report any missing capability. |
-| ha-mcp tools only | Use the state, diagnosis, history and standard climate-control workflows in [references/ha-mcp.md](references/ha-mcp.md). Native TPI analysis/application remains unavailable without its dedicated tools. |
+| ha-mcp tools only | Use the state, diagnosis, history and standard climate-control workflows in [references/ha-mcp.md](references/ha-mcp.md). Native collector logs, plugin diagnostics and TPI analysis/application require their dedicated tools. |
 | Both | Prefer the dedicated VTherm tool for each covered operation. Use ha-mcp for supported operations the native catalog lacks, subject to the restrictions below. |
 
 Read [references/ha-mcp.md](references/ha-mcp.md) before using ha-mcp, including in a mixed setup. Announce the chosen route and material limits briefly. Never issue the same write through both servers. Keep the target and Home Assistant instance consistent; equal entity IDs across servers do not prove equal instances.
@@ -50,6 +50,8 @@ Typical names through the Assist API are:
 - `assist__versatile_thermostat__get_status`
 - `assist__versatile_thermostat__diagnose`
 - `assist__versatile_thermostat__get_history`
+- `assist__versatile_thermostat__get_logs`
+- `assist__versatile_thermostat__get_plugins`
 - `assist__versatile_thermostat__check_tpi_optimization`
 - `assist__versatile_thermostat__analyze_tpi_coefficients`
 - `assist__versatile_thermostat__set_temperature`
@@ -96,6 +98,8 @@ Interpret in this order:
 7. Temperatures, target delta, HVAC action, preset, and other contextual values
 
 Do not infer a root cause from temperature difference alone. Distinguish facts returned by VTherm from interpretation. If the data does not establish a cause, say the diagnosis is inconclusive.
+
+For a direct request about VTherm logs or plugins linked to a thermostat, resolve the thermostat and call native `get_logs` or `get_plugins` when available. During a broader diagnosis, use these reads when the snapshot leaves a relevant question about recent events or a plugin. Report truncation, uncertain log attribution and partial plugin evidence.
 
 For deeper troubleshooting, read [references/diagnostic-reference.md](references/diagnostic-reference.md).
 
@@ -147,10 +151,7 @@ Cite the specific page used and distinguish documented behavior from facts measu
 
 If browsing is unavailable, a page cannot be reached, or the documentation still does not establish an answer, state what remains unknown and direct the user to the most relevant verified page, or to https://www.versatile-thermostat.org/ when no exact page is verified. Do not invent explanations, settings, paths or quotations, and do not claim to have read a page that was not accessed.
 
-If the instantaneous state is insufficient, recommend the VTherm log workflow rather than guessing:
-
-1. Export relevant logs with `versatile_thermostat.download_logs` if the user wants to continue debugging.
-2. Use the VTherm log analyzer at `https://www.versatile-thermostat.org/fr/debugger/`.
+If native collector logs are unavailable or insufficient, offer the manual log workflow described in the diagnostic reference.
 
 Do not trigger log download or upload logs to an external analyzer without the user's explicit request.
 
