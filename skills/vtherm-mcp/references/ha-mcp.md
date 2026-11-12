@@ -16,6 +16,8 @@ When native `diagnose` is absent, use a read-only state inspection. Read full at
 
 Explain that this diagnosis uses exposed state attributes. Do not invent the native `reasons`, `feature_flags` or `support_resources` response, or assume missing sections mean disabled protections. If attributes do not establish a cause, explain what is missing and offer the documentation/log workflow. Native collector logs and linked-plugin diagnostics require `versatile_thermostat__get_logs` and `versatile_thermostat__get_plugins`. Report when these tools are absent. Exposed attributes can provide context, and Recorder history can show recorded state changes. Neither establishes collector contents or native plugin coverage. Do not call a generic write tool or execute code to collect diagnostic data.
 
+For central configuration and dependencies, apply the [central-context procedure](diagnostic-reference.md#central-configuration-and-per-thermostat-context) to the fields actually exposed. Generic state access does not guarantee access to configuration entries or inheritance flags. Include confirmed central usage in the diagnosis and mark unavailable central settings or provenance unknown; do not execute templates/code or use configuration writes to obtain them.
+
 ## Temperature, preset and HVAC mode
 
 Only for an explicit change request and a verified target:

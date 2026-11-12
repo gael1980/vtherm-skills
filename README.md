@@ -59,7 +59,7 @@ Use the chosen server's read-only settings for diagnostic access. A hidden/denie
 
 ## Native feature availability
 
-Availability checked on **8 November 2026**. Verify the installed version and actual connector catalog rather than assuming all tools below are available.
+PR #2232/#2233 status checked on **12 November 2026**; release 10.6.4 contents below were verified on **8 November 2026**. Verify the installed version and actual connector catalog rather than assuming all tools below are available.
 
 | Workflow | Required tools | Upstream status at this check |
 | --- | --- | --- |
@@ -68,13 +68,17 @@ Availability checked on **8 November 2026**. Verify the installed version and ac
 | Recorder history, charts, CSV | `get_history` | [PR #2167](https://github.com/jmcollin78/versatile_thermostat/pull/2167) merged into official `main` on 1 November 2026 |
 | Explore classic TPI coefficients | `check_tpi_optimization`, `analyze_tpi_coefficients` | Same merged PR #2167; estimates remain exploratory |
 | Read collector logs and linked-plugin diagnostics | `get_logs`, `get_plugins` | [PR #2209](https://github.com/jmcollin78/versatile_thermostat/pull/2209) merged on 8 November 2026 and verified in VTherm 10.6.4 |
+| Central configuration and per-thermostat inheritance | Existing `list_vtherms`, `get_status`, `diagnose`; extended response fields | [PR #2232](https://github.com/jmcollin78/versatile_thermostat/pull/2232) open, unmerged; release/installed availability not established |
+| Experimental valve TPI analysis and verification notices for switches/valves | Existing `check_tpi_optimization`, `analyze_tpi_coefficients`; extended eligibility/results | [PR #2233](https://github.com/jmcollin78/versatile_thermostat/pull/2233) open, unmerged; release/installed availability not established |
 | Apply specified TPI coefficients | `set_tpi_coefficients` | Same merged PR #2167; explicit user request and control permission required |
 
 A merged PR does not by itself establish that a published release contains it. Missing tools must be reported; the skill must not bypass a refusal using generic services or another server. A connector may need its tool catalog refreshed after an integration update.
 
 The published release [10.6.4](https://github.com/jmcollin78/versatile_thermostat/releases/tag/10.6.4) contains both sets of tools. The two diagnostics tools target loaded VTherms exposed to Assist. Collector logs may be truncated or incomplete, and plugin discovery and state depend on the available evidence. Verify both tools in the actual MCP catalog.
 
-TPI estimates remain exploratory and do not establish optimal settings. Analysis supports classic TPI over physical switches, needs at least seven usable days within the last fourteen days, and does not apply coefficients. Climate/valve analysis, SmartPI and Auto-TPI are unsupported by that analysis. Graphs require recorded climate history and client-side chart creation; HVAC action is not physical relay duty.
+TPI estimates remain exploratory and do not establish optimal settings. Analysis supports classic TPI over physical switches, needs at least seven usable days within the last fourteen days, and does not apply coefficients. SmartPI and Auto-TPI are unsupported. PR #2233 proposes experimental `over_climate_valve` analysis from recorded opening commands (a proxy, not measured heat); plain `over_climate` and `over_valve` remain unsupported. This does not establish release or live installation availability. For both switches and valve-regulated climates, explicitly verify experimental estimates before application. Graphs require recorded climate history and client-side chart creation; HVAC action is not physical relay duty.
+
+PR #2232 proposes adding `central_configuration` to native list/status/diagnosis results, including per-thermostat inheritance and effective settings. It requires authenticated READ permission for loaded, exposed targets and exports reviewed fields only. The PR is open and unmerged; its presence in a release or installation is not established. Older servers retain the partial visibility described above. The two PRs extend existing tools: their names alone do not prove the new response fields or valve support are available.
 
 ## Example prompts
 
@@ -95,6 +99,8 @@ Charts use native history or the supported ha-mcp history route. TPI analysis re
 ## Control and diagnostics
 
 Diagnostic requests remain read-only. Writes require an explicit user request and a clear target. Coefficient application requires the native tool; large TPI changes require its additional confirmation workflow. The skill does not replace it with a generic TPI service call. The skill prioritizes VTherm’s own reasons, preserves entity IDs and enum values, and never invents missing history or uploads logs without authorization.
+
+Configuration reviews and diagnoses explicitly report central-configuration visibility and each inspected thermostat's confirmed inheritance, central-mode participation and central-boiler participation. Relevant inherited values are included when accessible. Older entity-state tools may expose effective settings without their central/local origin or the full central entry; the skill reports these gaps rather than assuming no central configuration exists.
 
 Every substantive VTherm answer links to the relevant verified page of the [official documentation](https://www.versatile-thermostat.org/), or its homepage when the exact page is unverified. For uncertain feature/configuration questions, the skill consults the current documentation when browsing is available. If it cannot consult the documentation or establish the answer, it states that limit. A reading suggestion is distinguished from a consulted source; documented features are distinguished from the installed version and live evidence.
 
@@ -117,6 +123,10 @@ Installez la skill avec la commande ci-dessus, puis connectez votre agent au MCP
 L'analyse et l'application des coefficients TPI nécessitent les outils natifs dédiés ; un appel de service générique ne reproduit pas leur procédure de confirmation. Ces outils ont été fusionnés dans le `main` officiel avec la PR #2167 le 1er novembre 2026. Vérifiez la version installée et le catalogue réel : la fusion ne prouve pas leur disponibilité. Les estimations restent exploratoires et ne prouvent pas un réglage optimal.
 
 Avec VTherm 10.6.4 et les outils natifs correspondants dans le catalogue MCP, la skill peut lire les journaux du collecteur et les diagnostics publiés par les plugins liés au thermostat. Elle signale la troncature et les états de plugins inconnus.
+
+Au 12 novembre 2026, les PR [#2232](https://github.com/jmcollin78/versatile_thermostat/pull/2232) (contexte central) et [#2233](https://github.com/jmcollin78/versatile_thermostat/pull/2233) (analyse TPI expérimentale `over_climate_valve` et avertissements pour switches/vannes) sont ouvertes, non fusionnées. Elles enrichissent les outils existants ; leurs noms ne suffisent pas à prouver ces nouvelles capacités. Pour les vannes, la commande enregistrée est un proxy, pas une mesure de chaleur. Toute estimation reste expérimentale, à vérifier avant application, y compris pour `over_switch`. La disponibilité en release ou dans votre installation reste à vérifier.
+
+Les revues de configuration et les diagnostics indiquent la visibilité de la configuration centrale et, pour chaque VTherm examiné, les réglages hérités vérifiables, la participation au mode central et à la chaudière centrale. Les valeurs centrales pertinentes sont incluses lorsqu'elles sont accessibles. Si les outils exposent uniquement les réglages effectifs sans leur origine ou sans la configuration centrale complète, cette limite est signalée.
 
 Chaque réponse VTherm substantielle renvoie vers la page pertinente vérifiée de la [documentation officielle](https://www.versatile-thermostat.org/), ou vers son accueil si la page exacte n'est pas vérifiée. En cas d'incertitude, la skill consulte cette documentation si elle peut naviguer et précise sinon cette limite. Un lien proposé à lire ne vaut pas consultation ; la documentation reste distincte de l'état réel de votre installation.
 

@@ -4,6 +4,7 @@
 
 - Diagnostic evidence order
 - Returned sections
+- Central configuration and per-thermostat context
 - Documentation resources
 - Escalation to logs
 - Response style
@@ -52,6 +53,30 @@ vtherm_over_valve
 ```
 
 Use only sections present in the response. Do not assume a feature is configured merely because a section name exists in this reference; check `feature_flags` and returned content.
+
+## Central configuration and per-thermostat context
+
+Include this context in configuration reviews and every diagnosis. Read native `diagnose` first, then `get_status` only for missing raw attributes; on the ha-mcp route use its authorized read-only state tools. Keep the same instance and existing exposure/permission limits. Do not invent a central climate entity, entity ID, tool or response section. The central configuration may be a separate integration entry rather than a thermostat in `list_vtherms`.
+
+When native results include `central_configuration`, use that object first. `configured` reports central-entry presence, `active` reports eligibility, and `settings` contains reviewed central values. In status/diagnosis, `thermostat.inheritance` describes the loaded thermostat's choices and `thermostat.effective_settings` its current merged values. List results place compact usage under each `thermostats[].central_configuration`. Keep central values and effective values distinct during reload; `effective_preset_temperatures` comes from published thermostat attributes, not central-entry temperatures. `status: unavailable` with `configured: null` means unknown, and `status: ambiguous` prevents selecting among multiple eligible entries. This additional context requires a currently exposed loaded target and authenticated READ permission. Administrators receive reviewed central fields; other users receive only inherited groups for authorized targets. These additive fields are proposed in [PR #2232](https://github.com/jmcollin78/versatile_thermostat/pull/2232), open and unmerged as checked on 12 November 2026; do not assume an installed/released server returns them. Older results without this object use the attribute procedure below.
+
+Report separately:
+
+| Evidence | What to include |
+| --- | --- |
+| Central configuration | Confirmed present, confirmed absent, or not observable, with the supporting source. A missing entity or field is not proof of absence. |
+| Shared settings used by this VTherm | Confirmed inherited groups and relevant values, with central versus local provenance when exposed. Otherwise say inheritance is unknown. Effective values alone do not establish their origin. |
+| `configuration.is_controlled_by_central_mode` | Participation in central operating-mode control: true, false or unknown if missing. |
+| `specific_states.last_central_mode` | Last central mode reported by this thermostat, preserving its raw value. It is not an independent fresh read of the central selector. |
+| `configuration.is_used_by_central_boiler` | Participation in central-boiler demand: true, false or unknown if missing. This does not prove the boiler is running. |
+
+Native diagnostic fields are under `sections`; raw status fields are under `attributes`. Older or newer versions may expose different fields: use only actual returned data. Where an authorized read exposes inheritance flags such as `use_main_central_config`, `use_tpi_central_config`, `use_presets_central_config`, `use_window_central_config`, `use_motion_central_config`, `use_power_central_config`, `use_presence_central_config`, `use_advanced_central_config` or `use_lock_central_config`, retain their exact names and values. This is not a list of fields guaranteed by `get_status` or `diagnose`.
+
+When inheritance is confirmed, include the central settings relevant to the symptom (for example presets, window thresholds, safety or power limits) and the effective thermostat settings when available. Identify other affected thermostats only from verified membership, within the requested scope. Never infer inheritance from equal values or from central-mode/boiler participation, and never attribute a root cause to central configuration merely because it exists. Keep VTherm's reason fields first.
+
+If the tools expose only effective attributes, explicitly say that the full central configuration and per-group inheritance cannot be read through this connection. Continue the diagnosis with the available reasons and effective values; for missing provenance, offer the relevant Home Assistant configuration screens or a user-supplied redacted diagnostic. Do not broaden access, execute templates/code, read hidden configuration entries or switch servers to recover restricted data. No configuration, selector or boiler change is authorized by this inspection.
+
+Example with partial visibility: “This VTherm follows central mode; its last reported mode is `Auto`. It does not participate in central-boiler demand. Shared-setting inheritance and the full central configuration are not exposed by the available tools.” Use this wording only when the corresponding booleans and mode were actually returned; otherwise mark those items unknown.
 
 ## Documentation resources
 
@@ -110,6 +135,7 @@ For a diagnosis, keep the conclusion evidence-based:
 Conclusion: <what VTherm is doing>
 Cause indicated by VTherm: <message/reason fields>
 Relevant context: <feature section and important values>
+Central context: <configuration visibility, inheritance, mode and boiler participation; unknowns explicit>
 Confidence: established / likely / inconclusive
 Next step: <only if needed>
 ```
